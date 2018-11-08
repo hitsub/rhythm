@@ -26,7 +26,7 @@ namespace Rhythm {
     }
 
     public class Lane {
-        public static int LaneMax = 5;
+        public static int LaneMax = 4;
         public float durationMs = 800f; //MSec
 
         private List<BezierPoint[]> pointList = new List<BezierPoint[]>();

@@ -27,26 +27,27 @@ public class GameManager : MonoBehaviour {
     AudioSource audioSource;
     int currentMusicTimeMSec = 0;
 
+	string SONGNAME = "Invitation";
+
     [SerializeField] Sprite[] sprites = new Sprite[5];
 
     void Start() {
-        notes = new Notes("VsInvader/easy");
+        notes = new Notes(SONGNAME + "/easy");
         lane = new Lane();
         StartCoroutine(notes.LoadNotes());
         notesPool = GetComponent<NotesPool>();
-
-
     }
 
     void Update() {
-        //読み込み終了判定
-        if (!notes.isCompleteLoad) {
+
+		//読み込み終了判定
+		if (!notes.isCompleteLoad) {
             return;
         }
         //楽曲読み込み終了判定
         if (!isLoadedMusic) {
             audioSource = GetComponent<AudioSource>();
-            audioSource.clip = Resources.Load<AudioClip>("VsInvader/song");
+            audioSource.clip = Resources.Load<AudioClip>(SONGNAME + "/" + notes.songFileName);
             audioSource.Play();
             isLoadedMusic = true;
         }

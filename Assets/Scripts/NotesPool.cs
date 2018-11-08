@@ -7,7 +7,7 @@ public class NotesPool : MonoBehaviour {
     // TODO : たぶんリストにして適宜拡張する感じが綺麗
     // TODO : indexが1周すると挙動が怪しいのでデバッグする
 
-    const int NOTES_MAX = 10;
+    const int NOTES_MAX = 50;
 
     int index = 0;
 

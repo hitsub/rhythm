@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Rhythm {
 
     public enum NoteType {
-        Normal = 1, HoldStart, HoldEnd
+        Normal = 1, HoldStart, HoldEnd, Mine
     };
 
     public class Note {
@@ -38,6 +38,7 @@ namespace Rhythm {
         private string fileContent;
         public string songTitle;
         public string songArtist;
+		public string songFileName;
         public float songPreviewStartSec; //Sec
         public float songPreviewDurationSec; //Sec
         public float songOffsetMSec; //MSec
@@ -55,7 +56,7 @@ namespace Rhythm {
         /// <param name="path">譜面ファイルのパス</param>
         public Notes(string path) {
 
-            //読み込み
+			//読み込み
             fileContent = Resources.Load<TextAsset>(path).text;
             //整形(不要かも)
             fileContent = fileContent.Replace(" ", "").Replace("　", "");
@@ -65,7 +66,8 @@ namespace Rhythm {
             //楽曲情報の取得
             songTitle = Regex.Match(fileContent, "(?<=#TITLE:)([\\s\\S]*?)(?=;)").Value.Replace("\n", "");
             songArtist = Regex.Match(fileContent, "(?<=#ARTIST:)([\\s\\S]*?)(?=;)").Value.Replace("\n", "");
-            float.TryParse(Regex.Match(fileContent, "(?<=#SAMPLESTART:)([\\s\\S]*?)(?=;)").Value.Replace("\n", ""), out songPreviewStartSec);
+			songFileName = Regex.Match (fileContent, "(?<=#MUSIC:)([\\s\\S]*?)(?=(.mp3|.wav|.ogg|.aiff|.aif|.mod|.it|.s3m|.xm);)").Value.Replace ("\n", "");
+			float.TryParse(Regex.Match(fileContent, "(?<=#SAMPLESTART:)([\\s\\S]*?)(?=;)").Value.Replace("\n", ""), out songPreviewStartSec);
             float.TryParse(Regex.Match(fileContent, "(?<=#SAMPLELENGTH:)([\\s\\S]*?)(?=;)").Value.Replace("\n", ""), out songPreviewDurationSec);
             float.TryParse(Regex.Match(fileContent, "(?<=#OFFSET:)([\\s\\S]*?)(?=;)").Value.Replace("\n", ""), out songOffsetMSec);
             songOffsetMSec *= 1000f; //Sec -> MSec
@@ -125,8 +127,8 @@ namespace Rhythm {
                         //小節数の計算(小節内における場所、0~1)
                         float measure = (float)i_row / tmpNotesRows.Length;
 
-                        //ノートインスタンスの作成
-                        NoteType type = (NoteType)(int.Parse(tmpLaneInfo.ToString()));
+						//ノートインスタンスの作成
+						NoteType type = (NoteType)((int)char.GetNumericValue (tmpLaneInfo));
                         Note note = new Note(i_lane, i_measure + measure, (int)songOffsetMSec + (int)totalMs + GetMeasureLength(i_measure, measure), type);
 
                         // TODO : ホールド時の分岐、キャストする
